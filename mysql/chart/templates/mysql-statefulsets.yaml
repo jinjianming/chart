@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  serviceName: {{ .Release.Name }}
+  replicas: {{ .Values.mysql.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: {{ .Release.Name }}
+        image: "{{ .Values.image.mysqlimages }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        nodeSelector: {{ .Values.mysql.nodeSelector }}
+        resources:
+{{ toYaml .Values.mysql.resources | indent 10 }}
+        command: ['sh', '-c', '/entrypoint.sh' ]
+        env:
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-root-passwd
+              key: mysql-root-passwd
+        ports:
+        - containerPort: 3306
+          name: {{ .Release.Name }}
+        readinessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - mysqladmin ping -u root -p${NEW_PASSWORD} -S /home/sock/mysql/tmp/mysql.sock
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        volumeMounts:
+        - mountPath: /home/sock/mysql/data
+          name: data
+        - name: mysql-conf
+          mountPath: /home/sock/mysql/etc/my.cnf
+          subPath: my.cnf
+      volumes:
+      - name: mysql-conf
+        configMap:
+          name: {{ .Release.Name }}-cnf
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        labels:
+         app: mysql
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: {{ .Values.data.storageClass }}
+        storageClassName: "local-path"
