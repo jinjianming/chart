@@ -2,12 +2,12 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 service:
-  nodePort: 8305
+  nodePort: 8309
   replicaCount: 1
 mysql:
   replicaCount: 1
   nodeSelector: {}
-  PASSWD: 1qaz2wsx
+  PASSWD: 2wsx3edc
   resources:
     limits:
       cpu: 1
