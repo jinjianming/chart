@@ -21,9 +21,9 @@ spec:
         nodeSelector: {{ .Values.mysql.nodeSelector }}
         resources:
 {{ toYaml .Values.mysql.resources | indent 10 }}
-        command: ['sh', '-c', '/entrypoint.sh' ]
+#        command: ['sh', '-c', '/entrypoint.sh' ]
         env:
-        - name: PASSWORD
+        - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: mysql-root-passwd
@@ -41,14 +41,14 @@ spec:
             command:
             - sh
             - -c
-            - mysqladmin ping -u root -p${NEW_PASSWORD} -S /home/sock/mysql/tmp/mysql.sock
+            - mysqladmin ping -u root -p${MYSQL_ROOT_PASSWORD} 
           initialDelaySeconds: 15
           periodSeconds: 20
         volumeMounts:
-        - mountPath: /home/sock/mysql/data
+        - mountPath: /var/lib/mysql
           name: data
         - name: mysql-conf
-          mountPath: /home/sock/mysql/etc/my.cnf
+          mountPath: /etc/mysql/my.cnf
           subPath: my.cnf
       volumes:
       - name: mysql-conf

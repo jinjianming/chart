@@ -17,7 +17,7 @@ mysql:
       memory: 4Gi
 image:
   mysqlimages: registry.det.baidu.com/library/mysql
-  tag: 5.7.21
+  tag: 5.7.30
 data:
   storageClass: 300Gi
 

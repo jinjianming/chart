@@ -7,7 +7,7 @@ data:
   my.cnf: |
     [client]
     port = 3306
-    socket = /home/sock/mysql/tmp/mysql.sock
+    socket = /var/run/mysqld/mysqld.sock
     default-character-set = utf8mb4
     
     [mysql]
@@ -16,20 +16,20 @@ data:
     
     [mysqld]
     port = 3306
-    socket = /home/sock/mysql/tmp/mysql.sock
+    socket = /var/run/mysqld/mysqld.sock
     
     basedir = /home/sock/mysql/
-    datadir = /home/sock/mysql/data
-    pid-file = /home/sock/mysql/mysql.pid
+    datadir = /var/lib/mysql
+    pid-file = /var/run/mysqld/mysqld.pid
     user = mysql
     bind-address = 0.0.0.0
     server-id=1
     general_log=On
     log_timestamps=SYSTEM
-    general_log_file=/home/sock/mysql/log/mysql.log
-    log_error = /home/sock/mysql/log/mysql-error.log
+    general_log_file=/var/log/mysql/mysql.log
+    log_error = /var/log/mysql/mysql-error.log
     slow_query_log = on
-    slow_query_log_file = /home/sock/mysql/log/mysql-slow.log
+    slow_query_log_file = /var/log/mysql/mysql-slow.log
     long_query_time=1
     slow_query_log = 1
     log_queries_not_using_indexes = ON
