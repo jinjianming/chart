@@ -16,7 +16,7 @@ mysql:
       cpu: 1
       memory: 4Gi
 image:
-  mysqlimages: mysql-2323
+  mysqlimages: mysql
   tag: 5.7.30
 data:
   storageClass: 300Gi
