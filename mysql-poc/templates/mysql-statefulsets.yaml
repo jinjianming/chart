@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+
 spec:
   selector:
     matchLabels:
@@ -29,40 +31,53 @@ spec:
               name: mysql-root-passwd
               key: mysql-root-passwd
         ports:
-        - containerPort: 3306
+        - containerPort: {{ .Values.service.port }}
           name: {{ .Release.Name }}
         readinessProbe:
           tcpSocket:
-            port: 3306
-          initialDelaySeconds: 5
-          periodSeconds: 10
+            port: {{ .Values.service.port }}
+        initialDelaySeconds: {{ .Values.mysql.readinitialDelaySeconds }}
+        periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+        timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+        successThreshold: {{ .Values.readinessProbe.successThreshold }}
+        failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
         livenessProbe:
           exec:
             command:
             - sh
             - -c
             - mysqladmin ping -u root -p${MYSQL_ROOT_PASSWORD} 
-          initialDelaySeconds: 15
-          periodSeconds: 20
+          initialDelaySeconds: {{ .Values.mysql.liveinitialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
         volumeMounts:
         - mountPath: /var/lib/mysql
-          name: data
-        - name: mysql-conf
+          name: {{ .Release.Name }}-data
+        - name: {{ .Release.Name }}-conf
           mountPath: /etc/mysql/my.cnf
           subPath: my.cnf
       volumes:
-      - name: mysql-conf
+      - name: {{ .Release.Name }}-conf
         configMap:
           name: {{ .Release.Name }}-cnf
+
+      - name: {{ .Release.Name }}-data
+{{- if .Values.persistence.enabled  }}
   volumeClaimTemplates:
     - metadata:
-        name: data
+        name: {{ .Release.Name }}-data
         labels:
-         app: mysql
+         app: {{ .Release.Name }}
       spec:
         accessModes:
-          - "ReadWriteOnce"
+          - {{ .Values.persistence.accessMode | quote }}
         resources:
           requests:
-            storage: {{ .Values.data.storageClass }}
-        storageClassName: "local-path"
+            storage: {{ .Values.persistence.size }}
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+{{- else }}
+        hostPath:
+          path: {{ .Values.hostPath.path }}
+{{- end }}

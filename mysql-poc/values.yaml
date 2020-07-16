@@ -1,0 +1,67 @@
+# Default values for mysql.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+#
+## Configure the service
+### ref: http://kubernetes.io/docs/user-guide/services/
+service:
+  nodePort: 8309
+  port: 8306
+## mysql image version
+### ref: https://hub.docker.com/r/library/mysql/tags/
+###
+image:
+  mysqlimages: "iregistry.baidu-int.com/acg-det/mysql"
+  tag: "5.7.30"
+
+mysql:
+  replicaCount: 1
+  readinitialDelaySeconds: 60
+  liveinitialDelaySeconds: 60
+## Node selector
+### ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  nodeSelector: {}
+## Specify password for root user
+###
+### Default: random 10 character string
+  PASSWD: baidu@123
+## Configure resource requests and limits
+### ref: http://kubernetes.io/docs/user-guide/compute-resources/
+###
+  resources:
+#    limits:
+#      cpu: 1
+#      memory: 8Gi
+    requests:
+      cpu: 1
+      memory: 4Gi
+
+#默认使用hostPath方式存储如果使用local-path将persistence下的enabled改为true即可。
+hostPath:
+  path: /data/mysql-poc
+## Persist data to a persistent volume
+persistence:
+  enabled: false
+  ## database data Persistent Volume Storage Class
+  #  If defined, storageClassName: <storageClass>
+  #  If set to "-", storageClassName: "", which disables dynamic provisioning
+  #  If undefined (the default) or set to null, no storageClassName spec is
+  #  set, choosing the default provisioner.  (gp2 on AWS, standard on
+  #  GKE, AWS & OpenStack)         
+  accessMode: ReadWriteOnce
+  size: 300Gi
+  annotations: {}
+  storageClass: local-path
+
+
+livenessProbe:
+  periodSeconds: 5
+  timeoutSeconds: 20
+  successThreshold: 1
+  failureThreshold: 3
+
+readinessProbe:
+  periodSeconds: 5
+  timeoutSeconds: 20
+  successThreshold: 3
+  failureThreshold: 1
