@@ -5,3 +5,6 @@
 # 将工作进程绑定到CPU组。每个CPU集由允许的CPU的位掩码表示
   worker_cpu_affinity: 01 10
 # 定义nginx单个工作进程可以允许同时建立外部连
+  worker_connections: 2048
+# 部署
+  helm install -f values.yaml --name nginx .
