@@ -18,7 +18,7 @@ mysqlRootPassword: mysql@123   # mysql-root的密码
 mysqlUser: user                 #设置普通用户名称
 mysqlUserPassword: usermysql@123   # mysql-user的密码
 
-设置普通用户和mysqladmin ping 使用用户设置，如果"livenessroot: false" 既使用mysqlUser进行mysqladmin ping、如果"livenessroot: true"既使用root进行mysqladmin ping。
+# 设置普通用户和mysqladmin ping 使用用户设置，如果"livenessroot: false" 既使用mysqlUser进行mysqladmin ping、如果"livenessroot: true"既使用root进行mysqladmin ping。
 
 livenessroot: true
 
