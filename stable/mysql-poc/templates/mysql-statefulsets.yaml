@@ -28,8 +28,15 @@ spec:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-root-passwd
-              key: mysql-root-passwd
+              name: {{ .Release.Name }}-password
+              key: mysql-root-password
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-password
+              key: mysql-password
+        - name: MYSQL_USER #默认有root用户 这里可额外指定一个用户、
+          value: {{ default "" .Values.mysql.mysqlUser | quote }}
         ports:
         - containerPort: {{ .Values.service.port }}
           name: {{ .Release.Name }}
@@ -46,7 +53,11 @@ spec:
             command:
             - sh
             - -c
+{{- if .Values.mysql.livenessroot  }}
             - mysqladmin ping -u root -p${MYSQL_ROOT_PASSWORD} 
+{{- else }}
+            - mysqladmin ping -u ${MYSQL_USER} -p${MYSQL_PASSWORD}
+{{- end }}
           initialDelaySeconds: {{ .Values.mysql.liveinitialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
