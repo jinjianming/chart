@@ -1,3 +1,7 @@
+## MySQL
+MySQL is one of the most popular database servers in the world. Notable users include Wikipedia, Facebook and Google.
+
+## 修改values.yaml 
 nodePort: 8309 #MySQL对外端口
 
 port: 8306    #MySQL内部端口
