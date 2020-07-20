@@ -21,8 +21,7 @@ livenessroot: true
 hostPath: /data/mysql-poc                             # 修改此处为mysql数据存储目录，hostpath方式
 ...
 ## 默认使用hostPath方式存储如果使用local-path将persistence下的enabled改为true、如果需要hostPath的将enabled改为false及为hostPath。
-
 persistence:
   enabled: false
-部署
+## 部署
 helm install mysql-poc --name mysql-poc
