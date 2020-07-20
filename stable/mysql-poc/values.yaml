@@ -24,11 +24,11 @@ mysql:
 ## Specify password for root user
 ###
 ### Default: random 10 character string
-  mysqlRootPassword: baidu@123
+  mysqlRootPassword: mysql@123
 ##设置普通用户和mysqladmin ping 使用用户设置，如果"livenessroot: false" 既使用mysqlUser进行mysqladmin ping、如果"livenessroot: true"既使用root进行mysqladmin ping。
   livenessroot: true
   mysqlUser: user
-  mysqlUserPassword: userbaidu@123
+  mysqlUserPassword: usermysql@123
 #  mysqlAllowEmptyPassword: true
 ## Configure resource requests and limits
 ### ref: http://kubernetes.io/docs/user-guide/compute-resources/
