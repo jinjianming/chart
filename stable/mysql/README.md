@@ -32,4 +32,4 @@ persistence:
 
   enabled: false
 ## 部署
-helm install mysql-poc --name mysql-poc
+helm install -f values.yaml --name mysql .
