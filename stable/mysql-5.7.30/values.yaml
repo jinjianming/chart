@@ -5,14 +5,18 @@
 ## Configure the service
 ### ref: http://kubernetes.io/docs/user-guide/services/
 service:
-  nodePort: 8309
+  name: mysql-exporter
+  nodePort: 8409
   port: 8306
+  externalPort: 9104
+  internalPort: 9104
 ## mysql image version
 ### ref: https://hub.docker.com/r/library/mysql/tags/
 ###
 image:
   mysqlimages: "iregistry.baidu-int.com/acg-det/mysql"
   tag: "5.7.30"
+  pullPolicy: IfNotPresent
 
 mysql:
   replicaCount: 1
@@ -21,14 +25,31 @@ mysql:
 ## Node selector
 ### ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   nodeSelector: {}
+  resources:
+#    limits:
+#      cpu: 1
+#      memory: 8Gi
+    requests:
+      cpu: 1
+      memory: 4Gi 
 ## Specify password for root user
 ###
 ### Default: random 10 character string
-  mysqlRootPassword: mysql@123
+  mysqlRootPassword: baidu@123
 ##设置普通用户和mysqladmin ping 使用用户设置，如果"livenessroot: false" 既使用mysqlUser进行mysqladmin ping、如果"livenessroot: true"既使用root进行mysqladmin ping。
   livenessroot: true
   mysqlUser: user
-  mysqlUserPassword: usermysql@123
+  mysqlUserPassword: userbaidu@123
+##监控需要的参数
+mysqlexporter:
+  enabled: false
+  image: "iregistry.baidu-int.com/acg-det/mysqld-exporter"
+  tags: "v0.11.0"
+  mysqlUserexporter: "root"
+  db: ""
+  protocol: ""
+  param: ""
+  replicaCountexporter: "1"
 #  mysqlAllowEmptyPassword: true
 ## Configure resource requests and limits
 ### ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -38,8 +59,8 @@ mysql:
 #      cpu: 1
 #      memory: 8Gi
     requests:
-      cpu: 1
-      memory: 4Gi
+      cpu: 100m
+      memory: 1Gi
 
 #默认使用hostPath方式存储如果使用local-path将persistence下的enabled改为true即可。
 hostPath:

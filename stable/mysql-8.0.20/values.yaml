@@ -1,0 +1,92 @@
+# Default values for mysql.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+#
+## Configure the service
+### ref: http://kubernetes.io/docs/user-guide/services/
+service:
+  name: mysql-exporter
+  nodePort: 8400
+  port: 8306
+  externalPort: 9104
+  internalPort: 9104
+## mysql image version
+### ref: https://hub.docker.com/r/library/mysql/tags/
+###
+image:
+  mysqlimages: "iregistry.baidu-int.com/acg-det/mysql"
+  tag: "8.0.20"
+
+mysql:
+  replicaCount: 1
+  readinitialDelaySeconds: 60
+  liveinitialDelaySeconds: 120
+## Node selector
+### ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  nodeSelector: {}
+  resources:
+#    limits:
+#      cpu: 1
+#      memory: 8Gi
+    requests:
+      cpu: 1
+      memory: 4Gi 
+## Specify password for root user
+###
+### Default: random 10 character string
+  mysqlRootPassword: baidu@123
+##设置普通用户和mysqladmin ping 使用用户设置，如果"livenessroot: false" 既使用mysqlUser进行mysqladmin ping、如果"livenessroot: true"既使用root进行mysqladmin ping。
+  livenessroot: true
+  mysqlUser: user
+  mysqlUserPassword: userbaidu@123
+##监控需要的参数
+mysqlexporter:
+  enabled: false
+  image: "iregistry.baidu-int.com/acg-det/mysqld-exporter"
+  tags: "v0.11.0"
+  mysqlUserexporter: "root"
+  db: ""
+  protocol: ""
+  param: ""
+  replicaCountexporter: "1"
+#  mysqlAllowEmptyPassword: true
+## Configure resource requests and limits
+### ref: http://kubernetes.io/docs/user-guide/compute-resources/
+###
+  resources:
+#    limits:
+#      cpu: 1
+#      memory: 8Gi
+    requests:
+      cpu: 100m
+      memory: 1Gi
+
+#默认使用hostPath方式存储如果使用local-path将persistence下的enabled改为true即可。
+hostPath:
+  path: /data/mysql-poc-8
+## Persist data to a persistent volume
+persistence:
+  enabled: false
+  ## database data Persistent Volume Storage Class
+  #  If defined, storageClassName: <storageClass>
+  #  If set to "-", storageClassName: "", which disables dynamic provisioning
+  #  If undefined (the default) or set to null, no storageClassName spec is
+  #  set, choosing the default provisioner.  (gp2 on AWS, standard on
+  #  GKE, AWS & OpenStack)         
+  accessMode: ReadWriteOnce
+  size: 300Gi
+  annotations: {}
+  storageClass: local-path
+
+
+livenessProbe:
+  periodSeconds: 5
+  timeoutSeconds: 20
+  successThreshold: 1
+  failureThreshold: 3
+
+readinessProbe:
+  periodSeconds: 5
+  timeoutSeconds: 20
+  successThreshold: 3
+  failureThreshold: 1

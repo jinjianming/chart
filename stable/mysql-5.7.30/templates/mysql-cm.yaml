@@ -24,7 +24,6 @@ data:
     # server 唯一标识
     server-id= 1
 
-    slave-skip-errors = 1062
     max_allowed_packet=64M
     bind-address=0.0.0.0
     socket=/var/lib/mysql/mysql.sock

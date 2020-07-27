@@ -1,5 +1,5 @@
 if [[ -z $1 ]]; then
         echo "USAGE: sh $0 values.yaml"
 else
-        helm install -f $1 --name mysql-poc  ../mysql-poc
+        helm upgrade mysql-poc-8 --values $1 .
 fi
