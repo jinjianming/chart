@@ -14,7 +14,7 @@ service:
 ### ref: https://hub.docker.com/r/library/mysql/tags/
 ###
 image:
-  mysqlimages: "iregistry.baidu-int.com/acg-det/mysql"
+  mysqlimages: "mysql"
   tag: "5.7.30"
   pullPolicy: IfNotPresent
 
@@ -43,7 +43,7 @@ mysql:
 ##监控需要的参数
 mysqlexporter:
   enabled: false
-  image: "iregistry.baidu-int.com/acg-det/mysqld-exporter"
+  image: "mysqld-exporter"
   tags: "v0.11.0"
   mysqlUserexporter: "root"
   db: ""
