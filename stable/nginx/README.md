@@ -16,7 +16,6 @@
   
     type: NodePort
     port: 8899
-  
-  portapp: 8898  #此端口为站点模式端口映射本地目录使用
+    portapp: 8898  #此端口为站点模式端口映射本地目录使用
 # 部署
   helm install -f values.yaml --name nginx .
