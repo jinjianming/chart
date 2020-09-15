@@ -16,3 +16,10 @@
     -e FTP_USER=myuser -e FTP_PASS=mypass \
     -e PASV_ADDRESS=127.0.0.1 -e PASV_MIN_PORT=21100 -e PASV_MAX_PORT=21110 \
     --name vsftpd --restart=always fauria/vsftpd
+## 默认社区的vsftpd不支持匿名用户、进行二次开发
+    镜像下载路径
+    
+## 修改ftp-deployent.yaml将name和value注释去掉即可
+         #匿名用户开关需要配合二次开发镜像
+         # - name: ANONYMOUS_ENABLE
+         #   value: "no"
