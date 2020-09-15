@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.vsftp.fullname  }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: vsftpd
+spec:
+  replicas: {{ .Values.vsftp.replicaCount }}
+  selector:
+    matchLabels:
+      app: vsftpd
+  template:
+    metadata:
+      labels:
+        app: vsftpd
+    spec:
+      containers:
+        - name: {{ .Values.vsftp.fullname  }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          ports:
+          - containerPort: 21
+            name: vsftpd
+          - containerPort: 8200
+            name: vsftpd0
+          - containerPort: 8201
+            name: vsftpd1
+          - containerPort: 8202
+            name: vsftpd2
+          - containerPort: 8203
+            name: vsftpd3
+          - containerPort: 8204
+            name: vsftpd4
+          - containerPort: 8205
+            name: vsftpd5
+          readinessProbe:
+            tcpSocket:
+              port: 21
+            initialDelaySeconds: {{ .Values.vsftp.readinitialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          livenessProbe:
+            tcpSocket:
+              port: 21
+            initialDelaySeconds: {{ .Values.vsftp.liveinitialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          env:
+          - name: FTP_USER
+            value: "{{ .Values.env.FTP_USER }}"
+          - name: FTP_PASS
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-password
+                key: ftp-password
+        #启用/禁用被动模式
+          - name: PASV_ADDRESS_ENABLE
+            value: "{{ .Values.env.PASV_ADDRESS_ENABLE }}"
+         #匿名用户开关需要配合二次开发镜像
+         # - name: ANONYMOUS_ENABLE
+         #   value: "no"
+        #如果要在选项中使用主机名（而不是IP地址），请设置为YES PASV_ADDRESS
+          - name: PASV_ADDRESS_RESOLVE
+            value: "{{ .Values.env.PASV_ADDRESS_RESOLVE }}"
+        #任何IPv4地址或主机名
+          - name: PASV_ADDRESS
+            value: "{{ .Values.env.PASV_ADDRESS }}"
+        #如果要在PASV_ADDRESS_RESOLVE选项中使用主机名（而不是IP地址），请设置为YES。
+          - name: PASV_ADDR_RESOLVE
+            value: "{{ .Values.env.PASV_ADDR_RESOLVE }}"
+        #如果要禁止使用PASV方法获取数据连接，请设置为NO。
+          - name: PASV_ENABLE
+            value: "{{ .Values.env.PASV_ENABLE }}"
+          - name: PASV_MIN_PORT
+            value: "{{ .Values.env.PASV_MIN_PORT }}"
+          - name: PASV_MAX_PORT
+            value: "{{ .Values.env.PASV_MAX_PORT }}"
+          volumeMounts:
+          - mountPath: /home/vsftpd/baidu
+            name: {{ .Values.vsftp.fullname }}data
+      volumes:
+      {{- if .Values.hostPath.enabled }}
+      - name: {{ .Values.vsftp.fullname }}data
+        hostPath:
+          path: {{ .Values.hostPath.path }}
+          type: {{ .Values.hostPath.type }}
+      {{- end }}
+
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}

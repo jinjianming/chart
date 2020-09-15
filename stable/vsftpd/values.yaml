@@ -1,0 +1,62 @@
+vsftp:
+  fullname: vsftp
+# 定义ftp副本数量
+  replicaCount: 1
+# 就绪探针时常
+  readinitialDelaySeconds: 5
+  liveinitialDelaySeconds: 5
+service:
+  type: NodePort
+  port: 8822
+# 具体细节见 https://hub.docker.com/r/fauria/vsftpd
+env:
+  FTP_USER: baidu
+  FTP_PASS: baidu
+# 启用/禁用被动模式
+  PASV_ADDRESS_ENABLE: no
+# 如果要在选项中使用主机名（而不是IP地址），请设置为YES PASV_ADDRESS
+  PASV_ADDRESS_RESOLVE: ""
+# 任何IPv4地址或主机名
+  PASV_ADDRESS: "10.153.204.28"
+# 如果要在PASV_ADDRESS_RESOLVE选项中使用主机名（而不是IP地址），请设置为YES。
+  PASV_ADDR_RESOLVE: "no"
+# 如果要禁止使用PASV方法获取数据连接，请设置为NO。
+  PASV_ENABLE: "yes"
+# 被动端口
+  PASV_MIN_PORT: "8200"
+  PASV_MAX_PORT: "8205"
+# 镜像配置
+image:
+  repository: fauria/vsftpd
+  tag: latest
+  pullPolicy: IfNotPresent
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+#  limits:
+#    cpu: 2
+#    memory: 1Gi
+  requests:
+    cpu: 1
+    memory: 1Gi
+# 标签
+nodeSelector: {}
+# 设置ftp宿主机持久化目录
+hostPath:
+  enabled: true
+  path: /home/jjm/ftp
+  type: ''
+# 探针时间设置
+livenessProbe:
+  periodSeconds: 5
+  timeoutSeconds: 20
+  successThreshold: 1
+  failureThreshold: 3
+
+readinessProbe:
+  periodSeconds: 5
+  timeoutSeconds: 20
+  successThreshold: 3
+  failureThreshold: 1
