@@ -1,6 +1,6 @@
 ## 设置用户名密码
-    FTP_USER: baidu
-    FTP_PASS: baidu
+    FTP_USER: ftp
+    FTP_PASS: ftp
 ## 定义你的ftp服务器地址
     PASV_ADDRESS:
 ## 镜像配置
