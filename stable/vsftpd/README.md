@@ -20,6 +20,7 @@
     镜像下载路径
     
 ## 修改ftp-deployent.yaml将name和value注释去掉即可
+### 改造点 http://note.youdao.com/s/cIfr1j5f
          #匿名用户开关需要配合二次开发镜像
          # - name: ANONYMOUS_ENABLE
          #   value: "no"
