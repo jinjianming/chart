@@ -64,8 +64,8 @@ spec:
           - name: PASV_ADDRESS_ENABLE
             value: "{{ .Values.env.PASV_ADDRESS_ENABLE }}"
          #匿名用户开关需要配合二次开发镜像
-         # - name: ANONYMOUS_ENABLE
-         #   value: "no"
+          - name: ANONYMOUS_ENABLE
+            value: "{{ .Values.env.ANONYMOUS_ENABLE }}"
         #如果要在选项中使用主机名（而不是IP地址），请设置为YES PASV_ADDRESS
           - name: PASV_ADDRESS_RESOLVE
             value: "{{ .Values.env.PASV_ADDRESS_RESOLVE }}"
