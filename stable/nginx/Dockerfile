@@ -1,4 +1,3 @@
-#基准镜像
 FROM centos
 #作者信息
 MAINTAINER "zhbr_zyn"
